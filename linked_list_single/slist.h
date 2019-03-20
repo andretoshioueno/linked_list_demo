@@ -6,11 +6,13 @@
 #define __SLIST_H_
 
 #include <stdbool.h>
+#include <stdint.h>
 
 /* single linked list data structure */
 typedef struct slist_s {
 	void *data;
 	struct slist_s *next;
+	struct slist_s *prev;
 }slist_t;
 
 /* single linked list head data structure */
@@ -26,24 +28,6 @@ typedef struct {
 int slist_insert(slist_info_t *s, slist_t *item, void *data);
 
 /**
- * @brief gets data from a specified position with optional remotion
- */
-int slist_get_data_from_position(slist_info_t *s, int position,  void *data, bool remove);
-
-
-/**
- * @brief gets data from head with optional remotion
- */
-int slist_get_data_from_head(slist_info_t *s, void *data, bool remove);
-
-
-/**
- * @brief gets data from tail with optional remotion
- */
-int slist_get_data_from_tail(slist_info_t *s,  void *data, bool remove);
-
-
-/**
  * @brief deletes all the items in current list
  */
 int slist_clean(slist_info_t *s);
@@ -52,6 +36,25 @@ int slist_clean(slist_info_t *s);
  * @brief get the current number of entries on list
  */
 int slist_get_noof_entries(slist_info_t *s);
+
+/**
+ * @brief gets data when a certain condition is met
+ */
+void *slist_get_data_when_true(slist_info_t *s, void *ctx,
+		int (*condition)(const void *data, void *ctx));
+
+/**
+ * @brief gets slot when a certain condition is met with optional removeal
+ * Get data pointer first with slist_get_data_when_true and free it to avoid
+ * memory leak
+ */
+slist_t *slist_get_slot_when_true(slist_info_t *s, void *ctx,
+		int (*condition)(const void *data, void *ctx),
+		bool remove);
+
+void print_list(slist_info_t *s,
+				void (*print_func)(uint8_t *data));
+
 
 
 /**
